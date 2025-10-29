@@ -6,12 +6,12 @@ class Dictionary:
         self.capacity: int = 8
         self.size: int = 0
         self.load_factor: float = 2 / 3
-        self.table: List[Optional[Tuple[Any, Any, int]]] \
+        self.table: List[Optional[Tuple[Any, Any, int]]]\
             = [None] * self.capacity
 
     # Dodawanie / aktualizacja klucza
     def __setitem__(self, key: Any, value: Any) -> None:
-        if self.size / self.capacity > self.load_factor:
+        if (self.size / self.capacity) > self.load_factor:
             self._resize()
 
         h: int = hash(key)
@@ -87,11 +87,11 @@ class Dictionary:
             else:
                 raise
 
-    # Czyszczenie słownika
+    # Czyszczenie słownika (O(n), zachowuje pojemność)
     def clear(self) -> None:
-        self.capacity = 8
         self.size = 0
-        self.table = [None] * self.capacity
+        for i in range(self.capacity):
+            self.table[i] = None
 
     # Aktualizacja z innego słownika
     def update(self, other: "Dictionary") -> None:
@@ -129,4 +129,5 @@ class Dictionary:
 
     # Zamiana na listę tuple (do testów)
     def items(self) -> List[Tuple[Any, Any]]:
-        return [(k, v) for k, v, h in self.table if k is not None]
+        return [(k, v) for entry in self.table
+                if entry is not None for k, v, h in [entry]]
